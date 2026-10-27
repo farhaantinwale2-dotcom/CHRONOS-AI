@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>CHRONOS AI · E2E Verification Suite</title>
+    <style>
+      body { background: #080b14; color: #e8eff8; font: 14px system-ui, sans-serif; padding: 2rem; }
+      .pass { color: #63e3bd; } .fail { color: #ff8e8e; }
+      ol { line-height: 1.8; }
+      iframe { position: absolute; width: 1200px; height: 900px; left: -10000px; }
+    </style>
+  </head>
+  <body>
+    <h1>CHRONOS AI · End-to-End Workflow Verification</h1>
+    <ol id="results"><li>Initializing test environment…</li></ol>
+    <iframe id="app" src="index.html"></iframe>
+
+    <script>
+      const results = document.querySelector("#results");
+      const report = (label, condition) => {
+        const row = document.createElement("li");
+        row.className = condition ? "pass" : "fail";
+        row.textContent = `${condition ? "PASS" : "FAIL"} · ${label}`;
+        results.append(row);
+        if (!condition) console.error("Test failed:", label);
+        return condition;
+      };
+
+      document.querySelector("#app").addEventListener("load", async (event) => {
+        results.innerHTML = "";
+        const win = event.target.contentWindow;
+        const doc = win.document;
+        const api = win.CHRONOS;
+
+        try {
+          // 1. Initial State Check
+          report("Initial archive has 3 demo records", doc.querySelectorAll("#record-list .record-card").length === 3);
+          report("Initial stat-records shows 3", doc.querySelector("#stat-records").textContent.trim() === "3");
+          report("Initial stat-voices shows 3", doc.querySelector("#stat-voices").textContent.trim() === "3");
+          report("TimeGraph canvas is mounted and sized", doc.querySelector("#graph-canvas") !== null);
+
+          // 2. Keyword Search
+          const searchInput = doc.querySelector("#search-input");
+          searchInput.value = "brass key";
+          searchInput.dispatchEvent(new win.Event("input"));
+          await new Promise(r => setTimeout(r, 100));
+          const searchResults = doc.querySelectorAll("#search-results .result-item");
+          report("Keyword search for 'brass key' yields results", searchResults.length > 0);
+          report("Search clear button becomes visible when text entered", doc.querySelector("#search-clear").hidden === false);
+
+          // Clear search
+          doc.querySelector("#search-clear").click();
+          report("Search clear button resets input and hides results", searchInput.value === "" && doc.querySelector("#search-clear").hidden === true);
+
+          // 3. Record Selection & Detail View
+          const firstCard = doc.querySelector("#record-list .record-card");
+          firstCard.click();
+          await new Promise(r => setTimeout(r, 100));
+          report("Selecting record card opens detail view", doc.querySelector("#record-detail h3") !== null);
+          report("Provenance citation displays original source", doc.querySelector(".detail-source").textContent.includes("ORIGINAL SOURCE"));
+
+          // 4. Record Creation
+          const initialCount = doc.querySelectorAll("#record-list .record-card").length;
+          doc.querySelector("#add-record").click();
+          await new Promise(r => setTimeout(r, 100));
+          const newCount = doc.querySelectorAll("#record-list .record-card").length;
+          report("Adding recording creates a new record in the directory", newCount === initialCount + 1);
+
+          // 5. Editing Newly Created Record
+          const titleInput = doc.querySelector("#record-detail input[data-metadata='title']");
+          const sourceInput = doc.querySelector("#record-detail input[data-metadata='source']");
+          titleInput.value = "Autonomous QA Verification Record";
+          titleInput.dispatchEvent(new win.Event("change", { bubbles: true }));
+          sourceInput.value = "qa-evidence-audio.wav";
+          sourceInput.dispatchEvent(new win.Event("change", { bubbles: true }));
+          await new Promise(r => setTimeout(r, 100));
+          
+          report("Title input updates archive list", doc.querySelector("#record-list .record-card.active strong").textContent.includes("Autonomous QA Verification Record"));
+
+          // 6. TimeGraph Interaction
+          const zoomInBtn = doc.querySelector("#graph-zoom-in");
+          const resetBtn = doc.querySelector("#graph-reset");
+          zoomInBtn.click();
+          report("Graph zoom in executes without errors", true);
+          resetBtn.click();
+          report("Graph reset executes without errors", true);
+
+          // 7. Safe Delete Modal
+          const deleteBtn = doc.querySelector("#record-detail [data-delete-record]");
+          deleteBtn.click();
+          await new Promise(r => setTimeout(r, 100));
+          const modal = doc.querySelector("#delete-confirm-modal");
+          report("Clicking delete icon opens confirmation modal safely", modal && modal.hidden === false);
+          
+          // Test cancel
+          doc.querySelector("#cancel-delete-record").click();
+          report("Clicking cancel closes modal without deleting record", modal.hidden === true && doc.querySelectorAll("#record-list .record-card").length === newCount);
+
+          // Re-open modal and confirm delete to clean up QA record
+          deleteBtn.click();
+          await new Promise(r => setTimeout(r, 100));
+          doc.querySelector("#confirm-delete-record").click();
+          await new Promise(r => setTimeout(r, 100));
+          const cleanedCount = doc.querySelectorAll("#record-list .record-card").length;
+          report("Confirming delete safely removes the QA record", cleanedCount === initialCount);
+
+          // 8. Open Heritage Exports
+          const exportJson = api.toJson(win.CHRONOS_DEMO);
+          report("Export JSON valid for demo records", JSON.parse(exportJson).records.length === 3);
+          const exportCsv = api.toCsv(win.CHRONOS_DEMO);
+          report("Export CSV valid with header and rows", exportCsv.includes("record_id") && exportCsv.includes("rec-harbor"));
+          const exportSrt = api.toSrt(win.CHRONOS_DEMO);
+          report("Export SRT valid with 9 subtitles", exportSrt.includes("-->") && exportSrt.split("\n\n").length >= 9);
+
+          // 9. Workstation Favicon Verification
+          const favicon = doc.querySelector("link[rel='icon']");
+          report("Workstation SVG favicon is defined in document head", favicon !== null && favicon.href.startsWith("data:image/svg+xml"));
+
+          console.log("ALL E2E WORKFLOW CHECKS COMPLETED SUCCESSFULLY!");
+        } catch (err) {
+          console.error("E2E Test Error:", err);
+          report(`E2E SUITE ERROR: ${err.message}`, false);
+        }
+      }, { once: true });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#070a12">
+    <meta name="description" content="CHRONOS AI — An offline-first professional workstation for exploring, annotating, and preserving oral-history archives and personal heritage recordings.">
+    <title>CHRONOS AI — Heritage Intelligence Workstation</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23070a12' stroke='%2300d4c8' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%2300d4c8'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23f59e0b' stroke-dasharray='3 3' stroke-width='1.5'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <!-- Ambient workstation illumination -->
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+    <div class="ambient ambient-three" aria-hidden="true"></div>
+
+    <!-- Workstation Topbar Navigation -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <a class="brand" href="#home" aria-label="Chronos AI Workstation Home">
+          <span class="brand-radar" aria-hidden="true"><span class="radar-sweep"></span><span class="radar-dot"></span></span>
+          <span class="brand-text">CHRONOS<span class="brand-light"> AI</span></span>
+          <span class="brand-edition-badge">HERITAGE WORKSTATION</span>
+        </a>
+      </div>
+
+      <nav class="topnav" aria-label="Workstation primary navigation">
+        <a href="#home" class="nav-item"><span class="nav-icon" aria-hidden="true">◈</span> OVERVIEW</a>
+        <a href="#archive" class="nav-item active"><span class="nav-icon" aria-hidden="true">▤</span> ARCHIVE INDEX</a>
+        <a href="#timegraph" class="nav-item"><span class="nav-icon" aria-hidden="true">⌬</span> TIMEGRAPH</a>
+        <a href="#studio" class="nav-item"><span class="nav-icon" aria-hidden="true">◖</span> MEDIA STUDIO</a>
+        <a href="#export" class="nav-item"><span class="nav-icon" aria-hidden="true">⇲</span> EXPORTS</a>
+      </nav>
+
+      <div class="topbar-right">
+        <div class="system-status-chip">
+          <span class="status-pulse"><span class="status-dot"></span></span>
+          <span class="status-label">LOCAL ARCHIVE</span>
+          <span class="status-sub">OFFLINE READY</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="workstation-main">
+      <!-- Section: Overview / Hero -->
+      <section class="hero" id="home">
+        <div class="hero-backdrop" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <div class="workstation-badge">
+            <span class="badge-icon">◉</span>
+            <span class="badge-text">HERITAGE INTELLIGENCE SYSTEM · PRIVACY FIRST</span>
+          </div>
+          <h1>Every voice holds<br>a <span class="gradient-text">universe.</span></h1>
+          <p class="hero-subtitle">Preserve living memory. Uncover human connection across time.</p>
+          <p class="hero-description">An offline-first research workstation engineered for oral historians, archivists, and families. Search spoken testimonies, explore relational metadata topologies, and preserve stories on your own hardware.</p>
+          
+          <div class="hero-actions">
+            <a class="button button-primary" href="#archive">
+              <span>Enter the archive</span>
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </a>
+            <a class="button button-secondary" href="#timegraph">
+              <span class="play-icon" aria-hidden="true">⌬</span>
+              <span>Explore TimeGraph</span>
+            </a>
+          </div>
+
+          <div class="hero-guarantees">
+            <div class="guarantee-item">
+              <span class="guarantee-icon">🔒</span>
+              <span>100% Client-side · No cloud uploads</span>
+            </div>
+            <div class="guarantee-item">
+              <span class="guarantee-icon">⚡</span>
+              <span>Instant local retrieval</span>
+            </div>
+            <div class="guarantee-item">
+              <span class="guarantee-icon">📦</span>
+              <span>Open data export (JSON · CSV · SRT)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="Interactive 3D Astrolabe digital heritage artifact">
+          <div class="hero-orbit orbit-a"></div>
+          <div class="hero-orbit orbit-b"></div>
+          <div class="artifact">
+            <div class="artifact-core">
+              <span class="core-logo">CH</span>
+              <i class="core-needle"></i>
+            </div>
+            <span class="artifact-ring ring-one"></span>
+            <span class="artifact-ring ring-two"></span>
+          </div>
+          <span class="orbit-label label-top">TEMPORAL PROJECTION / 001</span>
+          <span class="orbit-label label-bottom">DEMO RECORDINGS ACTIVE</span>
+          <span class="orbit-cross cross-one">✳</span>
+          <span class="orbit-cross cross-two">✳</span>
+        </div>
+
+        <!-- Telemetry Stats Cards -->
+        <div class="hero-bottom">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-icon">🎙</span>
+              <span class="stat-tag">AUDIO ARCHIVE</span>
+            </div>
+            <strong id="stat-records" class="stat-value">—</strong>
+            <span class="stat-label">RECORDINGS</span>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-icon">👥</span>
+              <span class="stat-tag">ORAL WITNESSES</span>
+            </div>
+            <strong id="stat-voices" class="stat-value">—</strong>
+            <span class="stat-label">VOICES</span>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-icon">📍</span>
+              <span class="stat-tag">GEOGRAPHIC NODES</span>
+            </div>
+            <strong id="stat-places" class="stat-value">—</strong>
+            <span class="stat-label">PLACES</span>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-icon">⏱</span>
+              <span class="stat-tag">INDEXED EVIDENCE</span>
+            </div>
+            <strong id="stat-moments" class="stat-value">—</strong>
+            <span class="stat-label">TRANSCRIPT MOMENTS</span>
+          </div>
+
+          <div class="dataset-note">
+            <span class="note-pulse"></span>
+            <span>FICTIONAL DEMO ARCHIVE LOADED · LOCAL COUNTERS</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Archive / Search & Records Workbench -->
+      <section class="section archive-section" id="archive">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> THE MEMORY INDEX</div>
+            <h2>Search and inspect <span class="gradient-text">evidence.</span></h2>
+          </div>
+          <div class="section-actions">
+            <button class="button button-accent" id="add-record">
+              <span class="btn-icon">＋</span> Add recording
+            </button>
+          </div>
+        </div>
+
+        <!-- Search Panel -->
+        <div class="search-panel glass-panel">
+          <div class="search-bar-wrap">
+            <label class="search-box" for="search-input">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input id="search-input" type="search" placeholder="Search a voice, place, topic, keyword, or transcript phrase…" autocomplete="off" spellcheck="false">
+              <div class="search-badges">
+                <button id="search-clear" class="search-clear-btn" aria-label="Clear search query" title="Clear query (Esc)" hidden>×</button>
+                <kbd class="search-kbd">ENTER</kbd>
+              </div>
+            </label>
+          </div>
+
+          <div class="search-filters-bar">
+            <div class="search-hint">
+              <span class="status-dot"></span>
+              <span>CASE-INSENSITIVE KEYWORD SEARCH · MATCHES TRANSCRIPTS &amp; METADATA PROVENANCE</span>
+            </div>
+            <div class="search-filter-pills" role="group" aria-label="Quick search filters">
+              <span class="filter-label">SHORTCUTS:</span>
+              <button class="filter-pill" type="button" data-search-term="harbor">#harbor</button>
+              <button class="filter-pill" type="button" data-search-term="radio">#radio</button>
+              <button class="filter-pill" type="button" data-search-term="garden">#garden</button>
+              <button class="filter-pill" type="button" data-search-term="brass key">"brass key"</button>
+            </div>
+          </div>
+
+          <div class="results" id="search-results" aria-live="polite"></div>
+        </div>
+
+        <!-- Archive Workbench Layout -->
+        <div class="archive-layout">
+          <!-- Record List Panel -->
+          <div class="record-list-panel glass-panel">
+            <div class="panel-topline">
+              <div class="panel-title-group">
+                <span class="panel-icon">▤</span>
+                <span>ARCHIVE DIRECTORY</span>
+              </div>
+              <span id="record-count" class="count-pill">0 RECORDS</span>
+            </div>
+            <div class="record-list-toolbar">
+              <span class="toolbar-hint">SELECT TO INSPECT DETAILS &amp; SEGMENTS</span>
+            </div>
+            <div id="record-list" class="record-list"></div>
+          </div>
+
+          <!-- Record Detail Workbench Panel -->
+          <article class="record-detail glass-panel" id="record-detail" aria-live="polite">
+            <div class="empty-detail">
+              <div class="empty-detail-art">
+                <span class="empty-glyph">◉</span>
+                <span class="empty-halo"></span>
+              </div>
+              <h3>Select an archival memory</h3>
+              <p>Choose any recording from the directory or search results to inspect its provenance, verified metadata, and timestamped transcript evidence.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Section: TimeGraph 3D Topology -->
+      <section class="section graph-section" id="timegraph">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> RELATIONAL TOPOLOGY</div>
+            <h2>The <span class="gradient-text">TimeGraph.</span></h2>
+          </div>
+          <div class="graph-hint">
+            <span>DRAG TO ORBIT</span> <span class="hint-dot">·</span> 
+            <span>SCROLL TO ZOOM</span> <span class="hint-dot">·</span> 
+            <span>CLICK NODE TO INSPECT</span>
+          </div>
+        </div>
+
+        <div class="graph-shell glass-panel">
+          <canvas id="graph-canvas" aria-label="Interactive 3D network visualization of archive recordings and metadata relationships. Drag to rotate, scroll to zoom, click to select." tabindex="0"></canvas>
+          
+          <div class="graph-overlay graph-title">
+            <span class="pulse-dot"></span>
+            <span class="graph-title-text">RELATIONAL MEMORY UNIVERSE</span>
+            <span class="graph-coords-indicator" id="graph-coords">3D PROJECTION ACTIVE</span>
+          </div>
+
+          <div class="graph-overlay graph-legend">
+            <span class="legend-chip"><i class="legend-record"></i> RECORDING</span>
+            <span class="legend-chip"><i class="legend-entity"></i> SPEAKER / PLACE</span>
+            <span class="legend-chip"><i class="legend-topic"></i> TOPIC</span>
+            <span class="legend-chip"><i class="legend-tag"></i> TAG</span>
+          </div>
+
+          <aside class="graph-inspector glass-panel" id="graph-inspector">
+            <div class="inspector-header">
+              <span class="inspector-label">NODE INSPECTOR</span>
+              <span class="inspector-badge">READY</span>
+            </div>
+            <div class="inspector-body">
+              <p>Select any node in the constellation to reveal explicit metadata connections.</p>
+            </div>
+          </aside>
+
+          <div class="graph-controls">
+            <button id="graph-reset" aria-label="Reset TimeGraph view" title="Reset view orientation (↺)">↺</button>
+            <button id="graph-zoom-in" aria-label="Zoom in" title="Zoom in (＋)">＋</button>
+            <button id="graph-zoom-out" aria-label="Zoom out" title="Zoom out (−)">−</button>
+          </div>
+        </div>
+
+        <div class="graph-footer-note">
+          <span class="info-glyph">ℹ</span>
+          <p class="graph-disclaimer">Connections derive strictly from explicit metadata fields (speakers, places, topics, tags). Undated memories remain unplaced chronologically; spatial positioning serves as a relational exploration aid, not an empirical timeline.</p>
+        </div>
+      </section>
+
+      <!-- Section: Media Studio (Audio & Video) -->
+      <section class="section studio-section" id="studio">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> LISTEN · ANNOTATE · PRESERVE</div>
+            <h2>Media <span class="gradient-text">studio.</span></h2>
+          </div>
+          <div class="studio-header-actions">
+            <label class="button button-outline file-button" for="audio-upload">
+              <span class="btn-icon">🎙</span> Import local audio
+              <input id="audio-upload" type="file" accept="audio/*" hidden>
+            </label>
+          </div>
+        </div>
+
+        <div class="studio-grid">
+          <!-- Audio Deck & Transcript Editor -->
+          <div class="audio-panel glass-panel">
+            <div class="panel-topline">
+              <div class="panel-title-group">
+                <span class="panel-icon">◖</span>
+                <span>LOCAL AUDIO DECK</span>
+              </div>
+              <span id="audio-file-label" class="source-status-badge">NO MEDIA LOADED</span>
+            </div>
+
+            <div class="audio-deck-body">
+              <div class="audio-now">
+                <span class="audio-art" aria-hidden="true">◉</span>
+                <div class="audio-meta">
+                  <h3 id="audio-title">Choose a recording</h3>
+                  <p id="audio-description">Open an archive record or import an audio file from this device.</p>
+                </div>
+              </div>
+
+              <!-- Waveform Visualization -->
+              <div class="wave-wrap" title="Click waveform to seek playback position">
+                <canvas id="wave-canvas" aria-label="Interactive audio waveform, click to seek position"></canvas>
+                <div class="wave-placeholder" id="wave-placeholder">
+                  <span class="wave-icon">〰</span>
+                  <span>IMPORT LOCAL AUDIO · LIVE SIGNAL APPEARS DURING PLAYBACK</span>
+                </div>
+              </div>
+
+              <!-- Playback Controls -->
+              <div class="audio-controls">
+                <button id="play-button" class="play-button" aria-label="Play audio" disabled title="Play / Pause">▶</button>
+                <div class="timecode-display">
+                  <span id="current-time" class="time-digit">00:00</span>
+                  <span class="time-separator">/</span>
+                  <span id="duration-time" class="time-digit">00:00</span>
+                </div>
+                <div class="seek-slider-wrap">
+                  <input id="audio-seek" type="range" min="0" max="1000" value="0" aria-label="Seek audio playback" disabled>
+                </div>
+                <button id="volume-button" class="volume-button" aria-label="Mute audio" title="Toggle audio mute">◖</button>
+              </div>
+
+              <audio id="audio-player" preload="metadata"></audio>
+
+              <!-- Transcript Segment Editor -->
+              <div class="transcript-section-wrap">
+                <div class="transcript-header">
+                  <div class="transcript-title-group">
+                    <span class="panel-icon">✎</span>
+                    <span>TRANSCRIPT SEGMENT EDITOR</span>
+                  </div>
+                  <span class="annotation-tag">USER ANNOTATION · SAVED LOCALLY</span>
+                </div>
+
+                <div id="transcript-editor" class="transcript-editor"></div>
+
+                <div class="transcript-footer">
+                  <span id="transcript-status">Select a recording to view and edit its segments.</span>
+                  <button id="add-segment" class="button button-outline small-button" disabled>＋ Add segment</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video Frame Explorer -->
+          <div class="video-panel glass-panel">
+            <div class="panel-topline">
+              <div class="panel-title-group">
+                <span class="panel-icon">▧</span>
+                <span>HERITAGE FRAME EXPLORER</span>
+              </div>
+              <span class="annotation-tag">LOCAL PREVIEW</span>
+            </div>
+
+            <div class="video-deck-body">
+              <label class="video-drop" id="video-drop" for="video-upload">
+                <span class="video-symbol" aria-hidden="true">▧</span>
+                <strong>Inspect a video recording.</strong>
+                <span>Select a video file to preview and capture still frames. Video data is processed entirely in your browser; nothing is uploaded.</span>
+                <span class="button button-outline small-button">Select local video</span>
+              </label>
+              
+              <input id="video-upload" type="file" accept="video/*" hidden>
+
+              <!-- Dedicated Video Error Banner -->
+              <div id="video-error-notice" class="video-error-notice" hidden role="alert">
+                <span class="error-icon">⚠</span>
+                <span id="video-error-text">Video decode error. The browser could not load this file format.</span>
+              </div>
+
+              <div class="video-player-container">
+                <video id="video-player" controls preload="metadata" hidden></video>
+              </div>
+
+              <div id="video-tools" class="video-tools" hidden>
+                <div class="frame-time-input-group">
+                  <label for="frame-time">FRAME TIME</label>
+                  <div class="input-with-unit">
+                    <input id="frame-time" type="number" min="0" step="0.5" value="0">
+                    <span class="unit-label">sec</span>
+                  </div>
+                </div>
+                <div class="video-btn-group">
+                  <button id="seek-frame" class="button button-outline small-button">Go to frame</button>
+                  <button id="capture-frame" class="button button-accent small-button">Capture still</button>
+                  <label class="button button-outline small-button replace-video" for="video-upload">Replace video</label>
+                </div>
+              </div>
+
+              <div class="captured-frame-wrap">
+                <canvas id="frame-canvas" class="frame-canvas" hidden aria-label="Captured video frame still"></canvas>
+                <div id="frame-download-wrap" class="frame-download-wrap" hidden>
+                  <button id="download-frame-btn" class="button button-outline small-button">↓ Download captured still (PNG)</button>
+                </div>
+              </div>
+
+              <div class="metadata-editor">
+                <div class="transcript-header">
+                  <div class="transcript-title-group">
+                    <span class="panel-icon">🏷</span>
+                    <span>FRAME &amp; MEMORY ANNOTATIONS</span>
+                  </div>
+                  <span class="annotation-tag">LOCAL NOTES · NOT AI GENERATED</span>
+                </div>
+
+                <div class="metadata-form">
+                  <label class="form-field">
+                    <span>FRAME / SCENE DESCRIPTION</span>
+                    <textarea id="video-description" rows="2" placeholder="Document what is visible or significant in this frame…"></textarea>
+                  </label>
+
+                  <div class="metadata-row">
+                    <label class="form-field">
+                      <span>LOCATION</span>
+                      <input id="video-place" placeholder="Verified place name">
+                    </label>
+                    <label class="form-field">
+                      <span>DATE / ERA</span>
+                      <input id="video-date" placeholder="Unknown unless sourced">
+                    </label>
+                  </div>
+
+                  <label class="form-field">
+                    <span>TOPICS</span>
+                    <input id="video-topics" placeholder="Comma-separated topics (e.g. market, music, celebration)">
+                  </label>
+
+                  <label class="form-field">
+                    <span>TAGS</span>
+                    <input id="video-tags" placeholder="Comma-separated tags (e.g. vintage, ceremony, 1950s)">
+                  </label>
+
+                  <div class="metadata-form-actions">
+                    <button id="save-video-notes" class="button button-accent small-button">Save annotations to record</button>
+                  </div>
+                </div>
+
+                <p class="privacy-note">Frame inspection uses your browser's native codecs. Automatic OCR, face detection, and AI image captioning are intentionally not enabled. Select an archive record first to bind annotations.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Open Heritage Export -->
+        <div class="export-bar glass-panel" id="export">
+          <div class="export-copy">
+            <div class="eyebrow"><span class="eyebrow-line"></span> OPEN HERITAGE EXPORT</div>
+            <h3>Preserve and share without vendor lock-in.</h3>
+            <p>Export your complete local archive anytime. Validates source attribution and timestamps before download.</p>
+          </div>
+          <div class="export-actions">
+            <button data-export="json" class="button button-outline export-button">
+              <span class="export-icon">{ }</span>
+              <div class="export-btn-text">
+                <strong>JSON</strong>
+                <span>Full archive schema</span>
+              </div>
+            </button>
+            <button data-export="csv" class="button button-outline export-button">
+              <span class="export-icon">▦</span>
+              <div class="export-btn-text">
+                <strong>CSV</strong>
+                <span>Tabular spreadsheet</span>
+              </div>
+            </button>
+            <button data-export="srt" class="button button-outline export-button">
+              <span class="export-icon">⏱</span>
+              <div class="export-btn-text">
+                <strong>SRT</strong>
+                <span>Timed subtitles</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="storage-card glass-panel">
+          <div class="storage-card-header">
+            <span class="storage-icon">🛡</span>
+            <strong>Privacy &amp; Local Persistence Guarantee</strong>
+          </div>
+          <p class="storage-note">Record metadata, transcripts, and annotations are stored locally in this browser's <code>localStorage</code>. Imported media files are held in temporary memory during your active session and are never uploaded to any remote server or persistent browser cache. Remember to keep original recordings safely stored on your local drive and download periodic JSON/CSV backups.</p>
+        </div>
+
+        <!-- System Toast Container -->
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <!-- Safe Record Delete Confirmation Modal -->
+    <div id="delete-confirm-modal" class="modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <span class="modal-warning-icon">⚠</span>
+          <div>
+            <h3 id="modal-title">Confirm Archival Record Removal</h3>
+            <p class="modal-subtitle">This action is permanent and applies to your local browser storage.</p>
+          </div>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete <strong id="delete-target-title">this record</strong>? Associated transcripts and metadata annotations stored on this device will be removed.</p>
+        </div>
+        <div class="modal-footer">
+          <button id="cancel-delete-record" class="button button-outline small-button">Cancel</button>
+          <button id="confirm-delete-record" class="button button-danger small-button">Permanently delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workstation Footer -->
+    <footer class="workstation-footer">
+      <div class="footer-left">
+        <a class="brand footer-brand" href="#home">
+          <span class="brand-radar" aria-hidden="true"><span class="radar-dot"></span></span>
+          <span>CHRONOS<span class="brand-light"> AI</span></span>
+        </a>
+        <span class="footer-motto">KEEP THE VOICES THAT MADE US.</span>
+      </div>
+      <div class="footer-right">
+        <span class="footer-pill">LOCAL-FIRST</span>
+        <span class="footer-pill">OPEN HERITAGE STANDARDS</span>
+        <span class="footer-pill">ZERO TELEMETRY</span>
+      </div>
+    </footer>
+
+    <!-- Core Archive Dependencies -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

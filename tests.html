@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CHRONOS AI · Local checks</title>
+    <style>
+      body { background: #080b14; color: #e8eff8; font: 15px "Segoe UI", sans-serif; padding: 2rem; }
+      h1 { font-size: 1.4rem; } #results { line-height: 2; } iframe { position: absolute; width: 1px; height: 1px; left: -10000px; }
+      .pass { color: #63e3bd; } .fail { color: #ff8e8e; } a { color: #71dcea; }
+    </style>
+  </head>
+  <body>
+    <h1>CHRONOS AI · Local regression checks</h1>
+    <p>These checks exercise keyword search, timestamp handling, metadata validation, and all export formats.</p>
+    <ol id="results"><li>Loading application…</li></ol>
+    <p><a href="index.html">Return to the archive</a></p>
+    <iframe id="app" src="index.html" title="Application under test"></iframe>
+    <script>
+      const results = document.querySelector("#results");
+      const test = (label, condition) => {
+        const row = document.createElement("li");
+        row.className = condition ? "pass" : "fail";
+        row.textContent = `${condition ? "PASS" : "FAIL"} · ${label}`;
+        results.append(row);
+        if (!condition) throw new Error(label);
+      };
+      document.querySelector("#app").addEventListener("load", (event) => {
+        try {
+          results.innerHTML = "";
+          const api = event.target.contentWindow.CHRONOS;
+          const record = {
+            id: "test-1", title: "Test Memory", source: "test.wav",
+            speaker: "Test Speaker", place: "Test Place", date: "",
+            language: "English", topics: ["test"], tags: [], description: "",
+            segments: [{ start: 62.25, end: 65.5, text: "A test phrase for the archive." }]
+          };
+          const placeholder = {
+            ...record, id: "draft-1", title: "Untitled memory",
+            source: "Source not specified", segments: []
+          };
+          const normalizedPlaceholder = {
+            ...record, id: "draft-2", title: "  uNTITLED MEMORY  ",
+            source: "  SOURCE NOT SPECIFIED  "
+          };
+          const placeholderSource = { ...record, source: "Source not specified" };
+          const completeWithoutTranscript = { ...record, segments: [] };
+          const rejects = (operation, message) => {
+            try { operation(); return false; }
+            catch (error) { return !message || error.message.includes(message); }
+          };
+          test("phrase search finds a transcript match", api.searchRecords("brass key").some((match) => match.segment?.text.includes("brass key")));
+          test("keyword search is case-insensitive", api.searchRecords("HARBOR").length === 1);
+          test("metadata search returns the matching field as evidence", api.searchRecords("Willow Courtyard").some((match) => match.excerpt === "Place: Willow Courtyard" && match.reason === "Matched place"));
+          test("timestamp formatting handles minutes and seconds", api.formatTime(125) === "02:05");
+          test("long timestamps retain their hour component", api.formatTime(3605) === "01:00:05");
+          test("invalid negative timestamps are rejected", !api.validRecords([{ ...record, segments: [{ start: -1, end: 2, text: "bad" }] }]));
+          test("valid metadata and segments pass validation", api.validRecords([record]));
+          test("JSON export is parseable", JSON.parse(api.toJson([record])).records[0].id === "test-1");
+          test("CSV export includes an escaped header and transcript", api.toCsv([record]).includes('"segment_start_seconds"') && api.toCsv([record]).includes("A test phrase"));
+          test("CSV export escapes embedded quotes", api.toCsv([{ ...record, title: 'The "Quoted" Memory' }]).includes('"The ""Quoted"" Memory"'));
+          test("SRT export uses valid millisecond timestamps", api.toSrt([record]).includes("00:01:02,250 --> 00:01:05,500"));
+          test("export rejects missing source metadata", (() => { try { api.toCsv([{ ...record, source: "" }]); return false; } catch { return true; } })());
+          test("JSON rejects an untouched new-record placeholder", rejects(() => api.toJson([placeholder]), "real title"));
+          test("CSV rejects an untouched new-record placeholder", rejects(() => api.toCsv([placeholder]), "real title"));
+          test("SRT rejects an untouched new-record placeholder", rejects(() => api.toSrt([placeholder]), "real title"));
+          test("JSON rejects case and whitespace variants of placeholders", rejects(() => api.toJson([normalizedPlaceholder]), "real title"));
+          test("JSON and CSV reject the source placeholder independently", rejects(() => api.toJson([placeholderSource]), "real source") && rejects(() => api.toCsv([placeholderSource]), "real source"));
+          test("JSON and CSV accept a real title and source", (() => {
+            try {
+              return JSON.parse(api.toJson([record])).records[0].title === "Test Memory" &&
+                api.toCsv([record]).includes('"Test Memory"') &&
+                api.toCsv([record]).includes('"test.wav"');
+            } catch { return false; }
+          })());
+          test("SRT rejects complete metadata when transcript is absent", rejects(() => api.toSrt([completeWithoutTranscript]), "no transcript segments"));
+          test("SRT accepts complete metadata with transcript timing", api.toSrt([record]).includes("00:01:02,250 --> 00:01:05,500"));
+          const demos = event.target.contentWindow.CHRONOS_DEMO;
+          test("existing demo records and transcript content remain intact", (() => {
+            const ids = demos.map((item) => item.id);
+            const segmentCount = demos.reduce((count, item) => count + item.segments.length, 0);
+            const exported = JSON.parse(api.toJson(demos)).records;
+            return JSON.stringify(exported) === JSON.stringify(demos) &&
+              ids.join(",") === "rec-harbor,rec-radio,rec-garden" &&
+              segmentCount === 9 &&
+              demos[0].source === "demo-harbor-interview.wav" &&
+              demos[0].segments[1].text === "My mother kept the old brass key in her coat, even after we had found a room." &&
+              demos[2].segments[2].text === "The paper has faded, but the handwriting still sounds like her voice to me.";
+          })());
+        } catch (error) {
+          const row = document.createElement("li");
+          row.className = "fail";
+          row.textContent = `CHECK RUN STOPPED · ${error.message}`;
+          results.append(row);
+          console.error(error);
+        }
+      }, { once: true });
+    </script>
+  </body>
+</html>
